@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 from bs4 import BeautifulSoup
 import urllib.request
 import requests
-=======
-
-from bs4 import BeautifulSoup
-import urllib2
->>>>>>> 62603321f268541699750a37682767c131d7d5d4
 
 class BRScraper:
     
@@ -23,16 +17,11 @@ class BRScraper:
         """
 
         def is_parseable_table(tag):
-<<<<<<< HEAD
             if not tag.has_attr("class"): return False
-=======
-            if not tag.has_key("class"): return False
->>>>>>> 62603321f268541699750a37682767c131d7d5d4
             return tag.name == "table" and "stats_table" in tag["class"] and "sortable" in tag["class"]
 
         def is_parseable_row(tag):
             if not tag.name == "tr": return False
-<<<<<<< HEAD
             if not tag.has_attr("class"): return True  # permissive
             return "league_average_table" not in tag["class"] and "stat_total" not in tag["class"] and "minors_table" not in tag["class"]
 
@@ -59,14 +48,6 @@ class BRScraper:
         elif role:
             table_ids = ["batting_standard"]
 
-=======
-            if not tag.has_key("class"): return True  # permissive
-            return "league_average_table" not in tag["class"] and "stat_total" not in tag["class"]
-
-        if isinstance(table_ids, str): table_ids = [table_ids]
-
-        soup = BeautifulSoup(urllib2.urlopen(self.server_url + resource))
->>>>>>> 62603321f268541699750a37682767c131d7d5d4
         tables = soup.find_all(is_parseable_table)
         data = {}
 
@@ -74,11 +55,7 @@ class BRScraper:
         for table in tables:
             
             if table_ids != None and table["id"] not in table_ids: continue
-<<<<<<< HEAD
             if verbose: print("Processing table " + table["id"])
-=======
-            if verbose: print "Processing table " + table["id"]
->>>>>>> 62603321f268541699750a37682767c131d7d5d4
             data[table["id"]] = []
             
             headers = table.find("thead").find_all("th")
@@ -95,15 +72,9 @@ class BRScraper:
                         header_name = base_header_name + "_" + str(i)
                     if verbose: 
                         if base_header_name == "":
-<<<<<<< HEAD
                             print("Empty header relabeled as %s" % header_name)
                         else:
                             print("Header %s relabeled as %s" % (base_header_name, header_name))
-=======
-                            print "Empty header relabeled as %s" % header_name
-                        else:
-                            print "Header %s relabeled as %s" % (base_header_name, header_name)
->>>>>>> 62603321f268541699750a37682767c131d7d5d4
                 else:
                     header_name = base_header_name
                 header_names.append(header_name)
@@ -113,7 +84,6 @@ class BRScraper:
                 entries = row.find_all("td")
                 entry_data = []
                 for entry in entries:
-<<<<<<< HEAD
 #                   if entry == entries[0]:
 #                        print(type(entry))
 #                        print(entry)
@@ -121,22 +91,15 @@ class BRScraper:
                         if len(entry.contents) > 1:
                             entry_data.append(entry.contents[0])
                             continue
-=======
-                    if entry.string == None:
->>>>>>> 62603321f268541699750a37682767c131d7d5d4
                         entry_data.append(u"")
                     else:
                         entry_data.append(entry.string.strip())
                 if len(entry_data) > 0:
                     data[table["id"]].append(dict(zip(header_names, entry_data)))
         
-<<<<<<< HEAD
         return data,role
 
 
 scraper = BRScraper()
 #data = scraper.parse_tables("players/r/rodrial01.shtml",['batting_standard'],True)
 #print(data)
-=======
-        return data
->>>>>>> 62603321f268541699750a37682767c131d7d5d4
