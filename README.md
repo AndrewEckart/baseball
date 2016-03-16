@@ -1,4 +1,3 @@
-
 Big League Baseball
 ==========
 

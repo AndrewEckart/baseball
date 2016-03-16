@@ -27,7 +27,7 @@ class BRScraper:
 
         if isinstance(table_ids, str): table_ids = [table_ids]
 
-        page = requests.get(self.server_url + resource)
+        page = requests.get(self.server_url + resource) 
 #        print(page.headers)
 #        print(page.encoding)
 #        print(page.text)
@@ -36,23 +36,29 @@ class BRScraper:
         # Filter out batting tables for pitchers and pitching tables for hitters - AE
 
         def get_role(soup):
-            role = ''
             if soup.find(itemprop="role"):
                 role = soup.find(itemprop="role").get_text()
+#            print("Role found: ",role)
             return role
         #       print(table_ids)
 
-        role = get_role(soup)
-        if "Pitcher" in role:
-            table_ids = ["pitching_standard"]
-        elif role:
-            table_ids = ["batting_standard"]
+        role = ''
+        if "players" in resource:
+            role = get_role(soup)
+            if "Pitcher" in role:
+                table_ids = ["pitching_standard"]
+            elif role:
+                table_ids = ["batting_standard"]
+
 
         tables = soup.find_all(is_parseable_table)
         data = {}
 
+#        print("Parsing with table_ids set to ",table_ids)
+
         # Read through each table, read headers as dictionary keys
         for table in tables:
+#            print("Table found with id ",table["id"])
             
             if table_ids != None and table["id"] not in table_ids: continue
             if verbose: print("Processing table " + table["id"])
