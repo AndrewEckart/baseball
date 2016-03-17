@@ -3,8 +3,8 @@ import rosters
 import players
 import teams
 import bbref
-import openpyxl
 import export
+from tqdm import tqdm
 
 def main(end=2015,numSeasons=3,exportplayers=False,destpath='brdata.xlsx'):
 	teamlist,playerlist = rosters.create_rosters()
@@ -16,8 +16,8 @@ def crawl_players(playerlist):
 	chadwick = bbref.create_player_database()
 	print("Chadwick database successfully initialized: %d records." %len(chadwick))
 	playerkeys,missing = bbref.convert_players(playerlist,chadwick)
-	for p in playerlist:
-		print("Crawling player: ",p.name)
+	print("Crawling player pages ...")
+	for p in tqdm(playerlist):
 		if p.brkey:
 			p.seasons = crawlplayer.get_all_seasons(p)
 	return playerkeys

@@ -7,7 +7,7 @@ class BRScraper:
     def __init__(self, server_url="http://www.baseball-reference.com/"):
         self.server_url = server_url
     
-    def parse_tables(self, resource, table_ids=None, verbose=False):
+    def parse_tables(self, resource, table_ids=None, verbose=False, get_pos=False,std_only=False):
         """
         Given a resource on the baseball-reference server (should consist of 
         the url after the hostname and slash), returns a dictionary keyed on 
@@ -42,14 +42,14 @@ class BRScraper:
             return role
         #       print(table_ids)
 
-        role = ''
-        if "players" in resource:
-            role = get_role(soup)
+        if get_pos:
+            role = ''
+            if "players" in resource:
+                role = get_role(soup)
             if "Pitcher" in role:
-                table_ids = ["pitching_standard"]
+                if std_only: table_ids = ["pitching_standard"]
             elif role:
-                table_ids = ["batting_standard"]
-
+                if std_only: table_ids = ["batting_standard"]
 
         tables = soup.find_all(is_parseable_table)
         data = {}
@@ -103,7 +103,8 @@ class BRScraper:
                 if len(entry_data) > 0:
                     data[table["id"]].append(dict(zip(header_names, entry_data)))
         
-        return data,role
+        if get_pos: return data,role
+        else: return data
 
 
 scraper = BRScraper()

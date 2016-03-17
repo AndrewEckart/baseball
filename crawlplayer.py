@@ -5,7 +5,7 @@ scraper = brscraper.BRScraper()
 
 def get_player_page(player):
 	player.url = "/players/%s/%s.shtml" %(player.brkey[0],player.brkey)
-	playerpage,player.position = scraper.parse_tables(player.url)
+	playerpage,player.position = scraper.parse_tables(player.url,get_pos=True,std_only=True)
 #	print("Player page downloaded.")
 	return playerpage
 
@@ -13,7 +13,7 @@ def player_seasons(playerpage):
 	playerseasons = {}
 	for table in playerpage.keys():
 		for row in playerpage[table]:
-			if row['Year']:
+			if row['Year'] and row['Tm'] != 'Proj': #Ignore pre-season Marcel projections
 				playerseasons[row['Year']] = row
 	return playerseasons
 
